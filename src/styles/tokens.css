@@ -1,0 +1,58 @@
+:root {
+  /* Primary: Golden Yellow */
+  --primary-50:  #FFFDF5;
+  --primary-100: #FFF8E1;
+  --primary-200: #FFECB3;
+  --primary-300: #FFD54F;
+  --primary-400: #FFCA28;
+  --primary-500: #FFB300;
+  --primary-600: #FF8F00;
+  --primary-700: #E65100;
+
+  /* Neutral */
+  --grey-50:  #F9FAFB;
+  --grey-100: #F2F4F6;
+  --grey-200: #E5E8EB;
+  --grey-300: #D1D6DB;
+  --grey-400: #B0B8C1;
+  --grey-500: #8B95A1;
+  --grey-600: #6B7684;
+  --grey-700: #4E5968;
+  --grey-800: #333D4B;
+  --grey-900: #191F28;
+  --white:    #FFFFFF;
+
+  /* Semantic */
+  --red-50:    #FFEEEE;
+  --red-500:   #F04452;
+  --green-50:  #E8F5E9;
+  --green-500: #03B26C;
+  --orange-50: #FFF3E0;
+  --orange-500:#FE9800;
+  --blue-50:   #E8F3FF;
+  --blue-500:  #3182F6;
+  --kakao:     #FEE500;
+
+  /* Cream/beige for food cards */
+  --cream-50:  #FEFCF5;
+  --cream-100: #FDF6E3;
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-medium: 0 2px 10px rgba(0,0,0,0.10);
+  --shadow-strong: 0 4px 20px rgba(0,0,0,0.15);
+  --shadow-glow:   0 4px 20px rgba(255,179,0,0.35);
+
+  /* Spacing */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px;
+
+  /* Radius */
+  --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
+  --r-xl: 20px; --r-full: 9999px;
+
+  --font: 'Pretendard Variable', 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+
+  /* NEW token: highlighter underline mark behind text */
+  --highlight-mark: #FFD54F;
+}
