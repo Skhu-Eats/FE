@@ -33,8 +33,8 @@ export const Button = ({
     <button
       className={cn(
         variantClasses[variant],
+        sizeClasses[size],
         fullWidth ? 'w-full' : 'w-auto',
-        disabled && 'disabled',
         className
       )}
       disabled={disabled}
