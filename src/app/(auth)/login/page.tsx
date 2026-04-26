@@ -1,6 +1,5 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -19,11 +18,6 @@ interface LoginForm {
 export default function LoginPage() {
   const router = useRouter();
   const { setAuth, isAuthenticated, _hasHydrated } = useAuthStore();
-  const [ready, setReady] = useState(false);
-
-  useLayoutEffect(() => {
-    setReady(true);
-  }, []);
 
   const {
     register,
@@ -34,7 +28,9 @@ export default function LoginPage() {
 
   const onSubmit = handleSubmit(async ({ emailId, password }) => {
     try {
-      const fullEmail = emailId.includes("@") ? emailId : `${emailId}@skhu.ac.kr`;
+      const fullEmail = emailId.includes("@")
+        ? emailId
+        : `${emailId}@skhu.ac.kr`;
       const { user, token } = await authService.login(fullEmail, password);
       setAuth(user, token);
       router.replace("/");
@@ -45,7 +41,7 @@ export default function LoginPage() {
     }
   });
 
-  if (!ready || !_hasHydrated) {
+  if (!_hasHydrated) {
     return <div className="flex flex-col flex-1 bg-white h-full" />;
   }
 
@@ -58,13 +54,18 @@ export default function LoginPage() {
     <div className="flex flex-col flex-1 bg-white animate-fade-slide-up h-full">
       <TopBar
         showLogo
-        rightAction={<button className="text-[14px] font-medium text-grey-600 px-[10px] py-[6px]">도움말</button>}
+        rightAction={
+          <button className="text-[14px] font-medium text-grey-600 px-[10px] py-[6px]">
+            도움말
+          </button>
+        }
       />
 
       <main className="flex-1 overflow-y-auto px-6 py-7 flex flex-col no-scrollbar">
         <section className="mb-8">
           <h1 className="text-[26px] font-bold text-grey-900 leading-[36px] tracking-[-0.6px] mb-2">
-            오늘 점심,<br />
+            오늘 점심,
+            <br />
             <span className="hl">같이 먹을 친구</span>를<br />
             찾아보세요
           </h1>
@@ -109,7 +110,10 @@ export default function LoginPage() {
             <Input
               {...register("password", {
                 required: "비밀번호를 입력해주세요",
-                minLength: { value: 8, message: "비밀번호는 8자 이상이어야 해요" },
+                minLength: {
+                  value: 8,
+                  message: "비밀번호는 8자 이상이어야 해요",
+                },
               })}
               type="password"
               placeholder="비밀번호 입력"
@@ -138,17 +142,34 @@ export default function LoginPage() {
           </Button>
 
           <div className="flex items-center justify-center gap-0 mt-4">
-            <Link href="#" className="text-[13px] font-medium text-grey-600 px-[10px] py-1">아이디 찾기</Link>
+            <Link
+              href="#"
+              className="text-[13px] font-medium text-grey-600 px-[10px] py-1"
+            >
+              아이디 찾기
+            </Link>
             <span className="text-grey-300 text-[13px]">|</span>
-            <Link href="#" className="text-[13px] font-medium text-grey-600 px-[10px] py-1">비밀번호 재설정</Link>
+            <Link
+              href="#"
+              className="text-[13px] font-medium text-grey-600 px-[10px] py-1"
+            >
+              비밀번호 재설정
+            </Link>
             <span className="text-grey-300 text-[13px]">|</span>
-            <Link href="/signup" className="text-[13px] font-bold text-grey-900 px-[10px] py-1">회원가입</Link>
+            <Link
+              href="/signup"
+              className="text-[13px] font-bold text-grey-900 px-[10px] py-1"
+            >
+              회원가입
+            </Link>
           </div>
         </form>
 
         <div className="flex items-center gap-3 mt-8 mb-4 text-grey-500">
           <div className="flex-1 h-[1px] bg-grey-200" />
-          <span className="text-[11px] font-semibold tracking-[0.5px] whitespace-nowrap uppercase">오늘의 밥친구 추천</span>
+          <span className="text-[11px] font-semibold tracking-[0.5px] whitespace-nowrap uppercase">
+            오늘의 밥친구 추천
+          </span>
           <div className="flex-1 h-[1px] bg-grey-200" />
         </div>
 
