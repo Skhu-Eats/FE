@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Chip } from "@/components/common/Chip";
 import { authService } from "@/services/auth.service";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const FOOD_CATEGORIES = [
   { id: "면류", label: "🍜 면류" },
@@ -47,6 +48,7 @@ type Step = 1 | 2;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { setAuth } = useAuthStore();
   const [step, setStep] = useState<Step>(1);
 
   const [codeSent, setCodeSent] = useState(false);
@@ -65,6 +67,7 @@ export default function RegisterPage() {
   const {
     register: reg1,
     getValues: getStep1Values,
+    trigger: trigger1,
     formState: { errors: errors1 },
     handleSubmit: handleSubmit1,
   } = useForm<Step1Fields>();
@@ -83,8 +86,9 @@ export default function RegisterPage() {
   }, [watchedNickname]);
 
   const handleSendCode = async () => {
+    const valid = await trigger1("emailId");
+    if (!valid) return;
     const emailId = getStep1Values("emailId");
-    if (!emailId) return;
     setCodeError("");
     setCodeLoading(true);
     try {
@@ -142,7 +146,7 @@ export default function RegisterPage() {
     setApiError("");
     const { emailId, password } = getStep1Values();
     try {
-      await authService.register({
+      const { user, token } = await authService.register({
         email: `${emailId}@skhu.ac.kr`,
         password,
         nickname: data.nickname,
@@ -150,7 +154,8 @@ export default function RegisterPage() {
         admission_year: data.admissionYear,
         category: selectedCategories,
       });
-      router.push("/login");
+      setAuth(user, token);
+      router.replace("/");
     } catch {
       setApiError("회원가입에 실패했어요. 다시 시도해주세요.");
     }
@@ -202,7 +207,13 @@ export default function RegisterPage() {
               </span>
               <div className="relative flex items-center">
                 <Input
-                  {...reg1("emailId", { required: "이메일을 입력해주세요" })}
+                  {...reg1("emailId", {
+                    required: "이메일을 입력해주세요",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._-]+$/,
+                      message: "올바른 학번 또는 아이디를 입력해주세요",
+                    },
+                  })}
                   placeholder="학번 또는 아이디"
                   disabled={codeVerified}
                   className="pr-28"
@@ -284,7 +295,10 @@ export default function RegisterPage() {
               <Input
                 {...reg1("password", {
                   required: "비밀번호를 입력해주세요",
-                  minLength: { value: 8, message: "8자 이상 입력해주세요" },
+                  pattern: {
+                    value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/,
+                    message: "영문, 숫자, 특수문자(@$!%*#?&)를 포함해 8자 이상 입력해주세요",
+                  },
                 })}
                 type="password"
                 placeholder="8자 이상, 영문+숫자+특수문자"
