@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -18,6 +19,11 @@ interface LoginForm {
 export default function LoginPage() {
   const router = useRouter();
   const { setAuth, isAuthenticated, _hasHydrated } = useAuthStore();
+  const [ready, setReady] = useState(false);
+
+  useLayoutEffect(() => {
+    setReady(true);
+  }, []);
 
   const {
     register,
@@ -39,7 +45,7 @@ export default function LoginPage() {
     }
   });
 
-  if (!_hasHydrated) {
+  if (!ready || !_hasHydrated) {
     return <div className="flex flex-col flex-1 bg-white h-full" />;
   }
 
