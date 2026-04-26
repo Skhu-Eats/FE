@@ -1,4 +1,5 @@
 import { RegisterPayload, AuthResponse, User } from "@/types/auth";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "";
 
@@ -16,7 +17,10 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 
 async function get<T>(path: string): Promise<T> {
   if (!BASE) throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured");
-  const res = await fetch(`${BASE}${path}`);
+  const token = useAuthStore.getState().token;
+  const res = await fetch(`${BASE}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error((json as { message?: string }).message ?? `HTTP ${res.status}`);
   return json as T;
