@@ -13,7 +13,7 @@ interface VerifyCodeBody { email: string; code: string }
 interface CheckNicknameBody { nickname: string }
 interface RegisterBody {
   email: string; password: string; nickname: string;
-  department: string; admissionYear: string;
+  department: string; admission_year: string;
   bio?: string; category?: string[];
 }
 
@@ -26,6 +26,7 @@ const members: Member[] = [
 ];
 
 const pendingCodes = new Map<string, string>();
+const activeSessions = new Map<string, string>(); // token → email
 
 const sanitizeUser = (user: Member): User => {
   const { password, ...safeUser } = user;
@@ -40,10 +41,12 @@ export const memberHandlers = [
     );
 
     if (user) {
+      const token = `mock-jwt-token-${Math.random().toString(36).slice(2, 11)}`;
+      activeSessions.set(token, user.email);
       return HttpResponse.json({
         message: "Login successful",
         user: sanitizeUser(user),
-        token: `mock-jwt-token-${Math.random().toString(36).substr(2, 9)}`,
+        token,
       });
     }
     return new HttpResponse(JSON.stringify({ message: "아이디 또는 비밀번호가 틀렸어요" }), {
@@ -83,21 +86,34 @@ export const memberHandlers = [
     const body = (await request.json()) as RegisterBody;
     const newUser: Member = {
       id: String(members.length + 101),
-      ...body,
-      avatar: null
+      email: body.email,
+      password: body.password,
+      nickname: body.nickname,
+      department: body.department,
+      admissionYear: body.admission_year,
+      avatar: null,
+      bio: body.bio,
+      category: body.category,
     };
     members.push(newUser);
+    const token = `mock-jwt-token-${Math.random().toString(36).slice(2, 11)}`;
+    activeSessions.set(token, newUser.email);
     return HttpResponse.json(
       {
         message: "회원가입이 완료됐어요",
         user: sanitizeUser(newUser),
-        token: "mock-jwt-token-new-user"
+        token,
       },
       { status: 201 },
     );
   }),
 
-  http.get("/api/members/me", () => {
-    return HttpResponse.json(sanitizeUser(members[0]));
+  http.get("/api/members/me", ({ request }) => {
+    const authHeader = request.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "");
+    const email = token ? activeSessions.get(token) : undefined;
+    const user = email ? members.find((m) => m.email === email) : members[0];
+    if (!user) return new HttpResponse(null, { status: 401 });
+    return HttpResponse.json(sanitizeUser(user));
   }),
 ];
